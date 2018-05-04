@@ -1,9 +1,4 @@
-
-//Section 1 Basic Info
-//highlight the first text input
-document.querySelector('#name').focus();
-document.querySelector('#other-title').hidden = true;
-
+//initalise global variables
 const creditCardDiv = document.getElementById('credit-card');
 const submitButton = document.querySelector('button');
 const tshirtLegend = document.querySelectorAll('legend')[1];
@@ -17,9 +12,15 @@ const cardNumberId = document.querySelector('#cc-num');
 const zipCodeId = document.getElementById('zip');
 const cvvId = document.getElementById('cvv');
 const otherJob = document.querySelector('#other-title');
+const colorOptionsDiv = document.getElementById('colors-js-puns');
 
+//highlight the first text input
+document.querySelector('#name').focus();
 
-//event listener to other to display the other text input box
+//initalise hiding the other input field
+document.querySelector('#other-title').hidden = true;
+
+//if other is selected show the other input text box and helper message div, else hide them
 document.querySelector(`form`).title.addEventListener('change', function(e){
   if(e.target.value === 'other'){
     otherJob.hidden = false
@@ -30,74 +31,83 @@ document.querySelector(`form`).title.addEventListener('change', function(e){
   }
 })
 
-//Section 2 T-Shirt Info
-function clearColorOptions(){
-  if(document.querySelector(`form`).design.value === `Select Theme`){
-    document.getElementById(`colors-js-puns`).style.display = `none`;
-  }
-}
-
+//hide T-shirt color div
 clearColorOptions();
 
+//controls which and when the diferent T-shirt colors are displayed
 document.querySelector(`form`).design.addEventListener('change', function(e){
-  const colorOptions = document.getElementById(`colors-js-puns`);
 
   if(e.target.value === 'js puns'){
-    colorOptions.style.display = `block`;
-    for(i=0; i<colorOptions.lastElementChild.length; i++){
-      colorOptions.lastElementChild[i].style.display = 'block'
-      if(colorOptions.lastElementChild[i].innerHTML.includes('♥')){
-        colorOptions.lastElementChild[i].style.display = 'none'
-      } else{colorOptions.lastElementChild.selectedIndex=i}
+    //display color options div
+    colorOptionsDiv.style.display = `block`;
+    //for each color display all colors
+    for(i=0; i<colorOptionsDiv.lastElementChild.length; i++){
+      colorOptionsDiv.lastElementChild[i].style.display = 'block'
+      //if innerHTML of each color option contains '♥', hide those options
+      if(colorOptionsDiv.lastElementChild[i].innerHTML.includes('♥')){
+        colorOptionsDiv.lastElementChild[i].style.display = 'none'
+      }
+      //selected dropdown option is the last option visable
+      else{colorOptionsDiv.lastElementChild.selectedIndex=i}
     }
   }
 
   if(e.target.value === 'heart js'){
-    colorOptions.style.display = `block`;
-    for(i=0; i<colorOptions.lastElementChild.length; i++){
-      colorOptions.lastElementChild[i].style.display = 'block'
-      if(colorOptions.lastElementChild[i].innerHTML.includes('Puns')){
-        colorOptions.lastElementChild[i].style.display = 'none'
-      } else{colorOptions.lastElementChild.selectedIndex=i}
+    //display color options div
+    colorOptionsDiv.style.display = `block`;
+    //for each color display all colors
+    for(i=0; i<colorOptionsDiv.lastElementChild.length; i++){
+      colorOptionsDiv.lastElementChild[i].style.display = 'block'
+      //if innerHTML of each color option contains 'Puns', hide those options
+      if(colorOptionsDiv.lastElementChild[i].innerHTML.includes('Puns')){
+        colorOptionsDiv.lastElementChild[i].style.display = 'none'
+      }
+      //selected dropdown option is the last option visable
+      else{colorOptionsDiv.lastElementChild.selectedIndex=i}
     }
   }
   clearColorOptions()
 })
 
-//Section 3 Register for Activities
+//Register for activities price counter and concurrent handling
 document.querySelectorAll('fieldSet')[2].addEventListener('change', function(){
   const checkBoxObjects = document.querySelectorAll(`input[type=checkbox]`);
+  const sumCost = document.querySelector('#sumCost');
   let totalCost = 0;
+
+  //for each checkbox selected, turn it's label green and add it's value to totalCost
   for(let i = 0; i<checkBoxObjects.length; i++){
-    if (checkBoxObjects[i].checked === true){
+    if(checkBoxObjects[i].checked === true){
+      checkBoxObjects[i].parentElement.style.color = 'green'
       totalCost += Number(checkBoxObjects[i].nextSibling.data.slice(-3))
+    }else{
+      checkBoxObjects[i].parentElement.style.color = ''
     }
   }
 
+  //if the firstNumber is selected, disable secondNumber, otherwise re-enable sencondNumber
   function inputClash(firstNumber, secondNumber){ //
     if(checkBoxObjects[firstNumber].checked === true){
       checkBoxObjects[secondNumber].disabled = true
       checkBoxObjects[secondNumber].parentElement.style.color = 'grey'
     }
-    else if(checkBoxObjects[secondNumber].disabled === true){
-      checkBoxObjects[secondNumber].parentElement.style.color = ''
+    else{
       checkBoxObjects[secondNumber].disabled = false
     }
-    if(checkBoxObjects[secondNumber].checked === true){
-      checkBoxObjects[firstNumber].disabled = true
-      checkBoxObjects[firstNumber].parentElement.style.color = 'grey'
-    }
-    else if(checkBoxObjects[firstNumber].disabled === true){
-      checkBoxObjects[firstNumber].parentElement.style.color = ''
-      checkBoxObjects[firstNumber].disabled = false
-    }
   }
-    inputClash(1,3)
-    inputClash(2,4)
 
-  if(document.querySelector('#sumCost')){
-    document.querySelector('#sumCost').remove();
+  //function calls for the clashing arrays
+    inputClash(1,3)
+    inputClash(3,1)
+    inputClash(2,4)
+    inputClash(4,2)
+
+  //if sumCost span exists, remove it
+  if(sumCost){
+    sumCost.remove();
   }
+
+  //add sumCost span
   const totalCostSpan = document.createElement("span");
   totalCostSpan.setAttribute('id', 'sumCost');
   totalCostSpan.innerHTML =(`Total Cost: $${totalCost}`);
@@ -107,7 +117,6 @@ document.querySelectorAll('fieldSet')[2].addEventListener('change', function(){
 
 //hide or show payment sections dynamically using the showHidePayment helper function
 document.querySelector('#payment').addEventListener('change', function(){
-
   if(paymentOptions.value === 'paypal'){
     showHidePayment(true, false, true)
   } else if(paymentOptions.value === 'bitcoin'){
@@ -139,25 +148,26 @@ document.querySelector('#payment').selectedIndex=1;
   document.querySelector('#name').insertAdjacentHTML('afterEnd', some_html);
 })();
 
+//add div below email, for helper message
 (function addEmailDiv(){
   const some_html = `<div id='email-info-message'></div>`;
   document.querySelector('#mail').insertAdjacentHTML('afterEnd', some_html);
 })();
 
+//add div below other job, for helper message
 (function addOtherJobDiv(){
   const some_html = `<div id='other-Job-message'></div>`;
   document.querySelector('#other-title').insertAdjacentHTML('afterEnd', some_html);
 })();
 
-const paymentErrorDiv = document.querySelector('#payment-helper-message');
 
 /* =============================================================================
                             Real Time Varification
 ============================================================================= */
+const paymentErrorDiv = document.querySelector('#payment-helper-message');
 
-//if credit card number is not entered correctly display an error message
+//if credit card number is not entered correctly display an error message with dynamic counter
 document.querySelector('#cc-num').addEventListener('keyup', function(){
-
   const blankMessage = `<p class='payment_message'>
   Please enter a credit card number.</p>`;
   const counterMessage = `<p class='payment_message'>
@@ -176,8 +186,8 @@ document.querySelector('#cc-num').addEventListener('keyup', function(){
   }
 })
 
+//if zip number is not entered correctly display an error message
 document.querySelector('#zip').addEventListener('keyup', function(){
-
   const blankMessage = `<p class='payment_message'>
   Please enter a 5 digit zip code.</p>`;
   const paragrapghId = document.querySelector('.payment_message')
@@ -188,8 +198,8 @@ document.querySelector('#zip').addEventListener('keyup', function(){
   textInputError(zipCodeId, blankMessage, paragrapghId, paymentErrorDiv);
 })
 
+//if cvv number is not entered correctly display an error message
 document.querySelector('#cvv').addEventListener('keyup', function(){
-
   const blankMessage = `<p class='payment_message'>
   Please enter a 3 digit cvv security number.</p>`;
   const paragrapghId = document.querySelector('.payment_message')
@@ -200,6 +210,7 @@ document.querySelector('#cvv').addEventListener('keyup', function(){
   textInputError(cvvId, blankMessage, paragrapghId, paymentErrorDiv);
 })
 
+//if name is not entered correctly display an error message
 document.querySelector('#name').addEventListener('keyup', function(){
 
   const blankMessage = `<p id='hello_message'>
@@ -214,6 +225,7 @@ document.querySelector('#name').addEventListener('keyup', function(){
 
 })
 
+//if email is not entered correctly display an error message
 document.querySelector('#mail').addEventListener('keyup', function(){
   const emailId = document.querySelector('#mail');
   const blankMessage = `<p id='email_message'>
@@ -229,6 +241,7 @@ document.querySelector('#mail').addEventListener('keyup', function(){
 
 })
 
+//if other job title is not entered correctly display an error message
 document.querySelector('#other-title').addEventListener('keyup', function(){
   const otherJobId = document.getElementById('other-title');
   const blankMessage = `<p id='other-job'>
@@ -249,6 +262,13 @@ document.querySelector('#other-title').addEventListener('keyup', function(){
 /* =============================================================================
                             Helper Functions
 ============================================================================= */
+
+//hide the color options div
+function clearColorOptions(){
+  if(document.querySelector(`form`).design.value === `Select Theme`){
+    colorOptionsDiv.style.display = `none`;
+  }
+}
 
 //show or hide sections of the payment section
 function showHidePayment(option1, option2, option3){
@@ -310,10 +330,10 @@ function textInputError(id, message, paraID, errorDiv){
   errorDiv.insertAdjacentHTML('afterBegin', message);
 }
 
+//check to see if element has a css class
 function hasClass(element, className) {
   return(' ' + element.className + ' ').indexOf(' ' + className+ ' ') > -1;
 }
-
 
 /* =============================================================================
                             Submit Function
@@ -323,46 +343,50 @@ submitButton.addEventListener('click', function(e){
 
   let checkBoxCount = 0;
 
-  document.getElementById('colors-js-puns').style.display === 'block' ?
+  //if color options div is displayed, section is complete
+  colorOptionsDiv.style.display === 'block' ?
   sectionComplete(tshirtLegend) : sectionUncompleted(tshirtLegend, e);
 
   const basicInfoLegend = document.querySelectorAll('legend')[0];
   const otherJobId = document.getElementById('other-title');
 
-
+  //if other input option displays and all the basic Info fields are varified, section is complete
   if(otherJobId.hidden === false){
     if(hasClass(otherJobId, 'text_input_varified') &&
       hasClass(nameId, 'text_input_varified') &&
       hasClass(emailId, 'text_input_varified')){
-      sectionComplete(basicInfoLegend)
+      sectionComplete(basicInfoLegend);
     } else{
-      sectionUncompleted(basicInfoLegend, e)
+      sectionUncompleted(basicInfoLegend, e);
     }
   }
+//else other input hidden and name and email are varified, section is complete
   else{
     if( hasClass(nameId, 'text_input_varified') &&
       hasClass(emailId, 'text_input_varified')){
-      sectionComplete(basicInfoLegend)
+      sectionComplete(basicInfoLegend);
     } else{
-      sectionUncompleted(basicInfoLegend)
+      sectionUncompleted(basicInfoLegend, e);
     }
   }
 
+//for all the checkboxes, if any are checked add 1 to checkBoxCount
   for(i=0; i<checkBoxList.length; i++){
     if(checkBoxList[i].checked){
       checkBoxCount +=1;
     }
   }
-
+//if checkBoxCount is greater than 0, section is complete
   checkBoxCount>0 ? sectionComplete(activitiesLegend)
   : sectionUncompleted(activitiesLegend, e);
 
+//if credit card is selected and all fields varified, section is complete
   if(paymentOptions.value === 'paypal'){
     sectionComplete(paymentLegend)
-    submitButton.setAttribute('href', 'https://www.paypal.com/uk/signin');
+    submitButton.setAttribute('onclick', 'https://www.paypal.com/uk/signin');
   } else if(paymentOptions.value === 'bitcoin'){
     sectionComplete(paymentLegend)
-    submitButton.setAttribute('href', 'https://www.coinbase.com/signin');
+    submitButton.setAttribute('onclick', 'https://www.coinbase.com/signin');
   } else if(paymentOptions.value === 'credit card'){
     if(hasClass(cardNumberId, 'text_input_varified') &&
        hasClass(zipCodeId, 'text_input_varified') &&
@@ -372,5 +396,4 @@ submitButton.addEventListener('click', function(e){
       sectionUncompleted(paymentLegend, e);
     }
   }
-
 })
