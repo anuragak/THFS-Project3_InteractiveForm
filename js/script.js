@@ -382,11 +382,9 @@ submitButton.addEventListener('click', function(e){
 
 //if credit card is selected and all fields varified, section is complete
   if(paymentOptions.value === 'paypal'){
-    sectionComplete(paymentLegend)
-    submitButton.setAttribute('onclick', 'https://www.paypal.com/uk/signin');
+    sectionComplete(paymentLegend);
   } else if(paymentOptions.value === 'bitcoin'){
-    sectionComplete(paymentLegend)
-    submitButton.setAttribute('onclick', 'https://www.coinbase.com/signin');
+    sectionComplete(paymentLegend);
   } else if(paymentOptions.value === 'credit card'){
     if(hasClass(cardNumberId, 'text_input_varified') &&
        hasClass(zipCodeId, 'text_input_varified') &&
