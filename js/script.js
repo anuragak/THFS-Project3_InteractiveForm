@@ -106,12 +106,13 @@ document.querySelectorAll('fieldSet')[2].addEventListener('change', function(){
   if(sumCost){
     sumCost.remove();
   }
-
-  //add sumCost span
-  const totalCostSpan = document.createElement("span");
-  totalCostSpan.setAttribute('id', 'sumCost');
-  totalCostSpan.innerHTML =(`Total Cost: $${totalCost}`);
-  document.querySelector('.activities').appendChild(totalCostSpan);
+  if(totalCost>0){
+    const some_html = `<div id='sumCost' class='succeed'>Total cost $${totalCost}</div>`;
+    document.querySelector('.activities').insertAdjacentHTML('beforeEnd', some_html);
+  } else{
+    const some_html = `<div id='sumCost' class='error'>Total cost $${totalCost}</div>`;
+    document.querySelector('.activities').insertAdjacentHTML('beforeEnd', some_html);
+  }
 })
 
 
@@ -160,6 +161,29 @@ document.querySelector('#payment').selectedIndex=1;
   document.querySelector('#other-title').insertAdjacentHTML('afterEnd', some_html);
 })();
 
+/* =============================================================================
+                            Array of congrates
+============================================================================= */
+const paymentSuccessMessages = [
+  'Awesome Possum!',
+  'Mathmatical!',
+  'Algebraic!',
+  'Elementry!',
+];
+
+//retrieve a random number that differs from the last random number
+function getNumber(){
+  return (getNumber.number = Math.floor(Math.random() * paymentSuccessMessages.length)) ===
+  getNumber.lastNumber ? getNumber() : getNumber.lastNumber = getNumber.number;
+};
+
+function paymentSuccess(){
+  return (`<p class='payment_message succeed'>${paymentSuccessMessages[getNumber()]}</p>`)
+};
+
+function paymentUnsuccess(message){
+  return (`<p class='payment_message error'>${message}</p>`)
+};
 
 /* =============================================================================
                             Real Time Varification
@@ -168,56 +192,53 @@ const paymentErrorDiv = document.querySelector('#payment-helper-message');
 
 //if credit card number is not entered correctly display an error message with dynamic counter
 document.querySelector('#cc-num').addEventListener('keyup', function(){
-  const blankMessage = `<p class='payment_message'>
-  Please enter a credit card number.</p>`;
-  const counterMessage = `<p class='payment_message'>
-  You have entered ${cardNumberId.value.length} numbers.
-  Please enter a number that is between 13 and 16 digits long.</p>`;
-  const successMessage = `<p class='payment_message'>Awesome Possum!</p>`;
+  const blankMessage = 'Please enter a credit card number.'
+  const counterMessage = `You have entered ${cardNumberId.value.length} numbers.
+  Please enter a number that is between 13 and 16 digits long.`;
   const paragrapghId = document.querySelector('.payment_message')
 
   if(cardNumberId.value.length >= 13 && cardNumberId.value.length <= 16
   && IsNumeric(cardNumberId.value)){
-  textInputVarified(cardNumberId, successMessage, paragrapghId, paymentErrorDiv)
+  textInputVarified(cardNumberId, paymentSuccess(), paragrapghId, paymentErrorDiv)
   }else if(cardNumberId.value.length <2){
-    textInputError(cardNumberId, blankMessage, paragrapghId, paymentErrorDiv);
+    textInputError(cardNumberId, paymentUnsuccess(blankMessage),paragrapghId,
+    paymentErrorDiv);
   } else{
-  textInputError(cardNumberId, counterMessage, paragrapghId, paymentErrorDiv);
+  textInputError(cardNumberId, paymentUnsuccess(counterMessage), paragrapghId,
+  paymentErrorDiv);
   }
 })
 
 //if zip number is not entered correctly display an error message
 document.querySelector('#zip').addEventListener('keyup', function(){
-  const blankMessage = `<p class='payment_message'>
-  Please enter a 5 digit zip code.</p>`;
+  const blankMessage = 'Please enter a 5 digit zip code.';
   const paragrapghId = document.querySelector('.payment_message')
-  const successMessage = `<p class='payment_message'>You da boss!</p>`;
 
   zipCodeId.value.length === 5 && IsNumeric(zipCodeId.value) ?
-  textInputVarified(zipCodeId, successMessage, paragrapghId, paymentErrorDiv) :
-  textInputError(zipCodeId, blankMessage, paragrapghId, paymentErrorDiv);
+  textInputVarified(zipCodeId, paymentSuccess(), paragrapghId, paymentErrorDiv) :
+  textInputError(zipCodeId, paymentUnsuccess(blankMessage), paragrapghId, paymentErrorDiv);
 })
 
 //if cvv number is not entered correctly display an error message
 document.querySelector('#cvv').addEventListener('keyup', function(){
-  const blankMessage = `<p class='payment_message'>
-  Please enter a 3 digit cvv security number.</p>`;
+  const blankMessage = 'Please enter a 3 digit cvv security number.';
   const paragrapghId = document.querySelector('.payment_message')
-  const successMessage = `<p class='payment_message'>Rockin it!</p>`;
 
   cvvId.value.length === 3 && IsNumeric(cvvId.value) ?
-  textInputVarified(cvvId, successMessage, paragrapghId, paymentErrorDiv) :
-  textInputError(cvvId, blankMessage, paragrapghId, paymentErrorDiv);
+  textInputVarified(cvvId, paymentSuccess(), paragrapghId, paymentErrorDiv) :
+  textInputError(cvvId, paymentUnsuccess(blankMessage), paragrapghId,
+  paymentErrorDiv);
 })
 
 //if name is not entered correctly display an error message
 document.querySelector('#name').addEventListener('keyup', function(){
 
-  const blankMessage = `<p id='hello_message'>
+  const blankMessage = `<p id='hello_message' class='error'>
   Please enter your name.</p>`;
   const paragrapghId = document.querySelector('#hello_message')
   const nameDiv = document.querySelector('#name-hello-message');
-  const successMessage = `<p id='hello_message'>Hello, ${nameId.value}!</p>`;
+  const successMessage = `<p id='hello_message' class='succeed'>
+  Hello, ${nameId.value}!</p>`;
 
   validateWord(nameId.value) && nameId.value.length>0 ?
   textInputVarified(nameId, successMessage, paragrapghId, nameDiv)
@@ -228,12 +249,12 @@ document.querySelector('#name').addEventListener('keyup', function(){
 //if email is not entered correctly display an error message
 document.querySelector('#mail').addEventListener('keyup', function(){
   const emailId = document.querySelector('#mail');
-  const blankMessage = `<p id='email_message'>
+  const blankMessage = `<p id='email_message' class='error'>
   Please enter your email.</p>`;
   const paragrapghId = document.querySelector('#email_message')
   const nameDiv = document.querySelector('#email-info-message');
-  const successMessage = `<p id='email_message'>We will email you further
-  details at ${emailId.value}</p>`;
+  const successMessage = `<p id='email_message' class='succeed'>
+  We will email you further details at ${emailId.value}</p>`;
 
   validateEmail(emailId.value) ?
   textInputVarified(emailId, successMessage, paragrapghId, nameDiv) :
@@ -244,11 +265,11 @@ document.querySelector('#mail').addEventListener('keyup', function(){
 //if other job title is not entered correctly display an error message
 document.querySelector('#other-title').addEventListener('keyup', function(){
   const otherJobId = document.getElementById('other-title');
-  const blankMessage = `<p id='other-job'>
+  const blankMessage = `<p id='other-job' class='error'>
   Please enter your job.</p>`;
   const paragrapghId = document.querySelector('#other-job')
   const nameDiv = document.querySelector('#other-Job-message');
-  const successMessage = `<p id='other-job'>You’re not alone!</p>`;
+  const successMessage = `<p id='other-job' class='succeed'>You’re not alone!</p>`;
 
 
   if(otherJobId && validateWord(otherJobId.value) && otherJobId.value.length>1){

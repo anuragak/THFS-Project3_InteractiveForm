@@ -169,10 +169,20 @@ animation: fadeInFromNone 1.5s ease-in;
   color: green;
 }
 
+.payment_message,
+#sumCost,
 #name-hello-message,
 #email-info-message,
 #other-Job-message{
   text-align: center;
+}
+
+.succeed{
+  color: green;
+}
+
+.error{
+  color: red;
 }
 
 /* =================================
