@@ -192,16 +192,20 @@ const paymentErrorDiv = document.querySelector('#payment-helper-message');
 
 //if credit card number is not entered correctly display an error message with dynamic counter
 document.querySelector('#cc-num').addEventListener('keyup', function(){
-  const blankMessage = 'Please enter a credit card number.'
+  const blankMessage = 'Please enter a credit card number.';
   const counterMessage = `You have entered ${cardNumberId.value.length} numbers.
   Please enter a number that is between 13 and 16 digits long.`;
-  const paragrapghId = document.querySelector('.payment_message')
+  const numbersOnly = 'Make sure you only enter digits!';
+  const paragrapghId = document.querySelector('.payment_message');
 
   if(cardNumberId.value.length >= 13 && cardNumberId.value.length <= 16
   && IsNumeric(cardNumberId.value)){
   textInputVarified(cardNumberId, paymentSuccess(), paragrapghId, paymentErrorDiv)
-  }else if(cardNumberId.value.length <2){
+  }else if(cardNumberId.value.length <2 && IsNumeric(cardNumberId.value)){
     textInputError(cardNumberId, paymentUnsuccess(blankMessage),paragrapghId,
+    paymentErrorDiv);
+  } else if(!IsNumeric(cardNumberId.value)){
+    textInputError(cardNumberId, paymentUnsuccess(numbersOnly),paragrapghId,
     paymentErrorDiv);
   } else{
   textInputError(cardNumberId, paymentUnsuccess(counterMessage), paragrapghId,
@@ -226,8 +230,7 @@ document.querySelector('#cvv').addEventListener('keyup', function(){
 
   cvvId.value.length === 3 && IsNumeric(cvvId.value) ?
   textInputVarified(cvvId, paymentSuccess(), paragrapghId, paymentErrorDiv) :
-  textInputError(cvvId, paymentUnsuccess(blankMessage), paragrapghId,
-  paymentErrorDiv);
+  textInputError(cvvId, paymentUnsuccess(blankMessage), paragrapghId, paymentErrorDiv);
 })
 
 //if name is not entered correctly display an error message
@@ -307,13 +310,14 @@ function validateEmail(email){
 
 //validate string is a string
 function validateWord(text){
-  const re = /\S+/;
+  const re = /^[a-zA-Z]*$/;
   return re.test(text);
 }
 
 //validate int is an int
 function IsNumeric(val) {
-    return Number(val)==val;
+  const re = /^\d+$/;
+  return re.test(val);
 }
 
 //add css class to the legend of completed sections

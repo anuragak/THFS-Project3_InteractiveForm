@@ -124,16 +124,15 @@ button:hover {
 ==================================== */
 
 #other-title{
-animation: fadeInFromNone 1.5s ease-in;
+animation: fadeInFromNone 0.6s ease-in;
 }
 
 #colors-js-puns{
-  animation: fadeInFromNone 1.5s ease-in;
+  animation: fadeInFromNone 0.6s ease-in;
 }
 
-
 #credit-card{
-  animation: fadeInFromNone 1.5s ease-in-out;
+  animation: fadeInFromNone 0.6s ease-in-out;
 }
 
 @keyframes fadeInFromNone {
